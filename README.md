@@ -1,47 +1,160 @@
-# Habitica Progress Board
+<p align="center">
+  <img src="HabiticaBoard.png" alt="Habitica Progress Board icon" width="84" />
+</p>
 
-An unofficial compact Windows desktop widget for Habitica To-Dos, Dailies and Habits. Python + Qt 6. Not affiliated with Habitica.
+<h1 align="center">Habitica Progress Board</h1>
 
-**Version 0.7.5 — Instant Response / Classic Font**
+<p align="center"><strong>Your Habitica tasks, always within reach.</strong></p>
+<p align="center">A compact Windows desktop widget for To-Dos, Dailies, and Habits.</p>
 
-## Start
+<p align="center">
+  <img src="https://img.shields.io/badge/version-0.7.5-9B8DBB" alt="Version 0.7.5" />
+  <img src="https://img.shields.io/badge/platform-Windows-8CAFC6" alt="Windows" />
+  <img src="https://img.shields.io/badge/Python-3.10%2B-88B4AD" alt="Python 3.10+" />
+  <img src="https://img.shields.io/badge/UI-Qt%206-B4A4C9" alt="Qt 6" />
+</p>
 
-1. Extract the entire ZIP into a normal folder. Do not open from inside the ZIP.
-2. Install Python 3.10+ and `py -m pip install PySide6-Essentials` if not already installed. Use the same interpreter to launch.
-3. Close the previous version, then double-click `Launch.pyw`. Or run `py .\Launch.pyw` in PowerShell from the extracted folder. The launcher shows startup errors.
-4. Existing Windows DPAPI credentials are reused if available. Otherwise open Settings and connect. Never share your API token.
+<p align="center">
+  <img src="docs/images/hero.png" alt="Habitica Progress Board showing its To-Dos, Dailies, and Habits views" width="100%" />
+</p>
 
-## What's new in 0.7.5
+Habitica Progress Board is an independent desktop companion for [Habitica](https://habitica.com/). It keeps your tasks visible while you work, so you can check off a To-Do, complete a Daily, or score a Habit without switching to your browser.
 
-- Restores the exact v0.7.2 font initialization, weight and stylesheet. Previously saved Rounded preferences are ignored; no new fonts required.
-- On HTTP 429, honors Habitica's Retry-After header (120 seconds plus a safety second if absent or invalid). Requests are blocked until the cooldown ends, and the client automatically refreshes the server state. The timer does not retry scoring writes. Unconfirmed intents are cleared on errors as in v0.7.4; verify server state before manually repeating them.
-- Normal automatic refresh interval increased from 60 to 120 seconds. Instant local response, viewport virtualization and the previous layout are unchanged.
-
-## Instant response behavior
-
-- To-Do completion, Daily toggles and checklist changes appear locally immediately. Overall progress is projected from a confirmed server snapshot plus pending actions. The permanent tracking record contains confirmed completions only.
-- Habit scores are queued individually; the footer shows pending changes. No Habit progress bar or invented score counter. Up to 24 pending actions may be queued while the server catches up. Writes run in FIFO order, one network worker at a time. The original API state checks and partial confirmation are retained.
-- If a network write fails or confirmation differs, the widget discards unconfirmed intents, restores the last confirmed snapshot, and requires a successful fresh read before accepting more actions. Some attempted writes may have succeeded server-side; never assume the rollback reversed server scoring. No automatic write retries. The close button waits for pending actions; forcibly terminating the process may lose unsent actions. This is not an offline durable queue.
-- The footer reports pending sync. Acknowledgments that do not change the visible state avoid rebuilding the list. Periodic refreshes remain enabled and use the same serialized worker.
-- Keeps the v0.7.3 pearl palette, icon, viewport virtualization, smooth wheel scrolling, layout and resize behavior.
+The widget combines a soft, pearl-inspired interface with compact task lists, progress tracking, and immediate local feedback while changes synchronize in the background.
 
 ## Features
 
-- Three sliding tabs: **To-Dos / Dailies / Habits**. No separate Projects category. Every active To-Do is visible in one searchable, scrollable list. Checklist To-Dos retain individual progress bars and expandable subtasks; ordinary To-Dos remain compact checkable rows. Parent To-Do completion with a checklist still requires all children checked and explicit confirmation.
-- Pinned overall To-Do progress bar: confirmed completed parent To-Dos (plus temporary pending completions in the on-screen preview) divided by the sum of confirmed completed and currently open To-Dos. A tracking period begins on the first successful sync (or Reset). New To-Dos increase the denominator. Reopened To-Dos return to the open list. Deleted or unconfirmed missing tasks are not counted as completed. Checklist completion is shown separately and does not itself count as a parent completion. Reset starts a new local tracking period without changing any Habitica tasks.
-- To-Do tracking persists locally per account, independent of search filters. The app requests the recent completed To-Dos at every refresh to recognize external completions of previously tracked open tasks. Habitica's API only supplies the most recent 30 completed To-Dos, so external completions missed while offline may remain unconfirmed; this is not an all-time account completion statistic.
-- Dailies: show due, not scheduled, and unknown schedule groups based on Habitica's `isDue` field. A separate progress bar counts only Dailies marked due by the server, using their `completed` status. Check or uncheck a Daily to sync its score; expandable Daily checklists are supported. Habitica controls its day boundary and recurring schedule. No forced cron or schedule modification.
-- Habits: positive/negative buttons according to the server's permitted directions. No progress bar.
-- Retains the Compact Pearl appearance, resize grip, drag-to-move header, pin, compact mode, icon and opacity controls. Auto-refresh every 120 seconds outside cooldown. No true native Acrylic blur.
+- **To-Dos:** Track overall completion, check off tasks, and expand checklists with individual progress bars.
+- **Dailies:** View recurring tasks, complete or undo them, and see progress for the current Habitica day.
+- **Habits:** Score repeatable habits using their available `+` and `−` buttons.
+- **Instant feedback:** Task changes are reflected locally before server confirmation, with a background action queue and reconciliation on failure.
+- **Habitica synchronization:** Automatic refresh, manual refresh, and rate-limit cooldown handling using the official API.
+- **Desktop widget:** Resizable, movable, optionally always on top, with compact mode and adjustable background opacity.
+- **Large task lists:** Viewport-based rendering, smooth wheel scrolling, and debounced search.
+- **Local preferences:** Remembers window settings and tracking history; optional Windows-encrypted token storage.
 
-## Tests and limitations
+## Getting started
 
-Run `py -m unittest discover -v`. 71 tests passed, including five new rate-limit tests. Two real Qt smoke tests were skipped because PySide6 is unavailable. Python syntax compilation passed. The geometry tests include 84 rows, 10,000-row bounds, anchor preservation and 500 deterministic random geometry cases. These are not measured frame rates or live Habitica tests. Windows Qt rendering, real widget virtualization, resizing, keyboard interactions and actual responsiveness still require testing on a Qt-enabled machine. Run `py .\Launch.pyw --demo` for a disconnected demo or use the classic launcher if needed. No bundled EXE. No true native Acrylic blur.
+For Windows installers and portable builds, see [Releases](https://github.com/rey-Lii/habitica-progress-board/releases). If no binary is available yet, use the source installation below.
 
-## Security
+### Requirements
 
-Settings and local tracking data are saved under `%LOCALAPPDATA%/HabiticaProgressBoard/settings.json`; remembered tokens use Windows DPAPI encryption. No user data or credentials are included in the source archive. Do not publish your settings. No license has been selected. The app avoids automatic retries of scoring writes; refresh after failures. Pending intents live in memory only.
+- Windows 10 or 11 (target platform)
+- Python 3.10 or later
+- PySide6-Essentials (Qt 6)
+- A Habitica account for live synchronization
 
-Official API: https://apidoc.habitica.com/
+### Install and run
 
-API rate-limit guidance: https://github.com/HabitRPG/habitica/wiki/API-Usage-Guidelines
+1. Select **Code → Download ZIP** on GitHub, or clone the repository.
+2. Extract the entire ZIP into a regular folder. Keep the Python files together.
+3. Open PowerShell in the extracted folder and install the dependency:
+
+   ```powershell
+   py -m pip install -r requirements.txt
+   ```
+
+4. Double-click `Launch.pyw` or run:
+
+   ```powershell
+   py .\Launch.pyw
+   ```
+
+If the widget does not open, use the PowerShell command above to diagnose startup errors. Make sure the same Python installation is used for installation and launch. `LaunchClassic.pyw` provides a compatibility mode for the task list.
+
+### Try the demo
+
+```powershell
+py .\Launch.pyw --demo
+```
+
+The demo starts with sample tasks and does not automatically connect to your account. Do not enter real credentials when testing the disconnected demo.
+
+### Connect your Habitica account
+
+1. Open [Habitica → Settings → API](https://habitica.com/user/settings/api).
+2. In the widget, click `···` to open Settings.
+3. Enter your User ID and API Token.
+4. Optionally select **Remember token**, then click **Connect**.
+
+Keep your API token private. Never include it in a GitHub issue, screenshot, or source file.
+
+## Using the widget
+
+| Control | Action |
+| --- | --- |
+| To-Dos / Dailies / Habits | Switch task views. |
+| Pin / Pinned | Toggle always-on-top mode. |
+| Header `−` / `+` | Collapse or expand the widget. |
+| Drag the header | Move the window. |
+| Drag the edges or resize grip | Resize the window. |
+| `···` | Account and appearance settings. |
+| Refresh | Synchronize task state with Habitica. |
+| Reset | Start a new local To-Do tracking period. |
+
+For a desktop shortcut, right-click `Launch.pyw` in File Explorer and choose **Show more options → Send to → Desktop (create shortcut)**. The included `HabiticaBoard.ico` can be assigned in the shortcut's Properties dialog.
+
+## How progress is calculated
+
+| View | Progress |
+| --- | --- |
+| To-Dos | Completed tracked parent To-Dos / (completed tracked parent To-Dos + currently open To-Dos). |
+| Checklists | Completed checklist items / all items in that checklist. |
+| Dailies | Completed Dailies due today / all Dailies due today, as reported by Habitica. |
+| Habits | No progress percentage; habits are repeatable scoring actions. |
+
+To-Do tracking begins at the first successful sync or after Reset. New tasks increase the total. Reset clears the local tracking period without changing tasks on Habitica. Completing a checklist does not automatically complete its parent To-Do.
+
+The To-Do percentage is a tracking-period metric, not an all-time account statistic. Habitica exposes only a limited recent history of completed To-Dos; external completions missed while the widget is offline may not be recovered.
+
+## Instant feedback and synchronization
+
+The application uses optimistic UI updates: the visible task state and progress respond immediately while pending writes are processed sequentially in the background. Only confirmed completions are persisted to the local progress record. Regular refreshes occur every 120 seconds outside cooldown periods.
+
+On a failed or uncertain write, the widget reconciles its state rather than automatically replaying scoring requests. HTTP 429 responses trigger a cooldown that honors `Retry-After` when available, followed by a fresh read. Some writes may have succeeded even if confirmation was lost, so verify task state before repeating an unconfirmed action.
+
+The pending queue is in memory, not a durable offline queue. Allow synchronization to finish before closing the widget.
+
+## Development
+
+Built with Python, PySide6 / Qt 6, and the [Habitica REST API](https://apidoc.habitica.com/).
+
+```text
+HabiticaProgressBoard.pyw  # Desktop UI and interactions
+Launch.pyw                 # Diagnostic launcher
+LaunchClassic.pyw          # Compatibility launcher
+habitica_core.py           # API, progress tracking and local settings
+optimistic.py              # Pending actions and state reconciliation
+virtual_scroll.py          # Viewport-based task rendering
+virtual_geometry.py        # List geometry helpers
+requirements.txt           # Runtime dependency
+test_*.py                  # Automated tests
+HabiticaBoard.ico          # Windows icon
+HabiticaBoard.png          # Project icon
+docs/images/hero.png       # Product screenshots
+```
+
+Run the automated tests:
+
+```powershell
+py -m unittest discover -v
+```
+
+For v0.7.5, 71 tests passed and two Qt smoke tests were skipped in the development environment because PySide6 was unavailable. These tests cover core logic, progress, optimistic updates, rate limiting, and list geometry; they do not establish live API reliability or Windows rendering performance.
+
+## Current status and privacy
+
+Version 0.7.5 is an early source-code release. Python and Qt are required; there is no bundled Windows installer or executable. The translucent pearl-inspired interface is not native Windows Acrylic blur.
+
+Settings and tracking data are stored locally under `%LOCALAPPDATA%\HabiticaProgressBoard\settings.json`. Remembered API tokens are protected with Windows DPAPI. The widget communicates directly with Habitica's API. Do not upload your local settings or credentials.
+
+## Feedback
+
+Bug reports and feature suggestions are welcome through GitHub Issues. Please include the application version, Windows version, and steps to reproduce the issue, with private task details and credentials removed.
+
+## Disclaimer
+
+Habitica Progress Board is an unofficial, independent companion application. It is not affiliated with or endorsed by Habitica.
+
+- [Habitica API documentation](https://apidoc.habitica.com/)
+- [Habitica API usage guidelines](https://github.com/HabitRPG/habitica/wiki/API-Usage-Guidelines)
