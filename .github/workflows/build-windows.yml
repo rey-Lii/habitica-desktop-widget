@@ -1,30 +1,36 @@
 name: Build Windows packages
-
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
       - '.github/workflows/build-windows.yml'
-      - 'build-windows.ps1'
-      - 'installer.iss'
-
+      - 'scripts/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'assets/**'
+      - 'requirements.txt'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-windows.yml'
+      - 'scripts/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'assets/**'
+      - 'requirements.txt'
 permissions:
   contents: read
-
 jobs:
   build:
     runs-on: windows-latest
     timeout-minutes: 25
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           architecture: x64
-
       - name: Install Inno Setup
         shell: pwsh
         run: |
@@ -32,11 +38,9 @@ jobs:
             choco install innosetup --yes --no-progress
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           }
-
       - name: Test and build
         shell: pwsh
-        run: ./build-windows.ps1
-
+        run: ./scripts/build-windows.ps1
       - name: Upload Windows packages
         uses: actions/upload-artifact@v4
         with:

@@ -1,2 +1,0 @@
-Upload the contents of this folder into the repository root, preserving .github/workflows and docs/images. This is an add-on to the existing v0.7.5 source, not a standalone installer.
-GitHub Actions > Build Windows packages > Run workflow. After a successful run, download the artifact and extract it. Test the installer and portable app on Windows before publishing them as release assets. The builds are unsigned.

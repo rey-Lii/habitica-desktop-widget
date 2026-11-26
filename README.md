@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="HabiticaBoard.png" width="80" alt="Habitica Progress Board icon">
+  <img src="assets/HabiticaBoard.png" width="80" alt="Habitica Progress Board icon">
 </p>
 
 <h1 align="center">Habitica Progress Board</h1>
@@ -71,16 +71,16 @@ Requires Python 3.10+ and PySide6-Essentials. Download or clone the repository a
 
 ```powershell
 py -m pip install -r requirements.txt
-py .\Launch.pyw
+py .\src\Launch.pyw
 ```
 
 Disconnected demo:
 
 ```powershell
-py .\Launch.pyw --demo
+py .\src\Launch.pyw --demo
 ```
 
-Do not enter real credentials in the demo. `LaunchClassic.pyw` provides a compatibility mode for the task list.
+Do not enter real credentials in the demo. `src/LaunchClassic.pyw` provides a compatibility mode for the task list.
 
 Run tests:
 
@@ -88,7 +88,7 @@ Run tests:
 py -m unittest discover -v
 ```
 
-Windows packaging uses PyInstaller and Inno Setup. See [build instructions](BUILD-INSTRUCTIONS.txt) and the [Windows build workflow](.github/workflows/build-windows.yml).
+Windows packaging uses PyInstaller and Inno Setup. See [build instructions](docs/BUILD.md) and the [Windows build workflow](.github/workflows/build-windows.yml).
 
 </details>
 

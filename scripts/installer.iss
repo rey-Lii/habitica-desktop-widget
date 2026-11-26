@@ -1,5 +1,6 @@
 #define AppVersion "0.7.5"
 [Setup]
+SourceDir=..
 AppId=HabiticaProgressBoard.rey-Lii
 AppName=Habitica Progress Board
 AppVersion={#AppVersion}
@@ -13,7 +14,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 OutputDir=release
 OutputBaseFilename=HabiticaProgressBoard-v{#AppVersion}-Windows-x64-Setup
-SetupIconFile=HabiticaBoard.ico
+SetupIconFile=assets\HabiticaBoard.ico
 UninstallDisplayIcon={app}\HabiticaProgressBoard.exe
 Compression=lzma2
 SolidCompression=yes
