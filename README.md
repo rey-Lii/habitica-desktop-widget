@@ -20,7 +20,7 @@
 
 Habitica Progress Board is an independent desktop companion for [Habitica](https://habitica.com/). It keeps your tasks visible while you work, so you can check off a To-Do, complete a Daily, or score a Habit without switching to your browser.
 
-The widget combines a soft, pearl-inspired interface with compact task lists, progress tracking, and immediate local feedback while changes synchronize in the background.
+The widget combines a soft interface with compact task lists, progress tracking, and immediate local feedback while changes synchronize in the background.
 
 ## Features
 
