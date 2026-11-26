@@ -60,7 +60,6 @@ To-Do progress counts parent tasks completed since tracking began, relative to t
 - On HTTP 429 the widget honors the available Retry-After value, then refreshes. Failed or uncertain scoring writes are not automatically replayed. Verify server state before repeating an unconfirmed action.
 - Pending actions are stored in memory, not in a durable offline queue. Allow synchronization to finish before closing the widget.
 - Preferences and tracking data are stored under `%LOCALAPPDATA%\HabiticaProgressBoard\settings.json`. Remembered tokens use Windows DPAPI. The widget communicates directly with the Habitica API.
-- The pearl-inspired translucent interface does not implement native Windows Acrylic blur.
 
 </details>
 
@@ -98,4 +97,4 @@ Windows packaging uses PyInstaller and Inno Setup. See [build instructions](docs
 
 ---
 
-An independent, unofficial companion app. Not affiliated with or endorsed by Habitica. Built with Python, Qt 6 and the [Habitica REST API](https://apidoc.habitica.com/).
+An independent, unofficial companion app. Built with Python, Qt 6 and the [Habitica REST API](https://apidoc.habitica.com/).
