@@ -37,7 +37,7 @@ For Windows 10/11 (x64). The packaged builds include Python and Qt; no separate 
 | [Portable ZIP](https://github.com/rey-Lii/habitica-progress-board/releases/download/v0.7.5/HabiticaProgressBoard-v0.7.5-Windows-x64-portable.zip) | Extract the entire archive and open `HabiticaProgressBoard.exe`. |
 | [SHA256 checksums](https://github.com/rey-Lii/habitica-progress-board/releases/download/v0.7.5/SHA256SUMS.txt) | Verify download integrity. |
 
-The installer is currently unsigned. Windows may display a publisher warning. This is an early release; the cloud build succeeded, but installation and live-account behavior on every supported Windows configuration have not been verified.
+The installer is currently unsigned. Windows may display a publisher warning. This is an early release.
 
 ## Connect to Habitica
 
