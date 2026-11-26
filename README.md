@@ -2,7 +2,7 @@
   <img src="assets/HabiticaBoard.png" width="80" alt="Habitica Progress Board icon">
 </p>
 
-<h1 align="center">Habitica Progress Board</h1>
+<h1 align="center">Habitica Desktop Widget</h1>
 
 <p align="center">Your Habitica tasks, always within reach.</p>
 <p align="center">
