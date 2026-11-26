@@ -1,6 +1,13 @@
 """Habitica Progress Board 0.7.5 — Qt desktop widget."""
 import sys, os, copy, threading, time
 from pathlib import Path
+
+
+def asset_path(filename):
+    """Resolve icons from the source tree or PyInstaller bundle."""
+    root = Path(sys._MEIPASS) if getattr(sys, 'frozen', False) else Path(__file__).resolve().parent.parent
+    return root / 'assets' / filename
+
 from habitica_core import API, APIError, RateLimitError, DEMO, DEMO_HABITS, DEMO_DAILIES, split_tasks, visible_todos, matches, update_tracker, tracked_progress, daily_progress, task_id, progress, protect, load_settings, save_settings, display_signature, merge_task, changed_keys
 try:
     from PySide6.QtCore import Qt, QRectF, QPoint, QTimer, QVariantAnimation, QEasingCurve, Signal, QObject
@@ -119,7 +126,7 @@ class Board(QWidget):
         super().__init__(); self.demo=demo; self.settings=load_settings(); self.api=None; self.tasks=copy.deepcopy(DEMO); self.habits=copy.deepcopy(DEMO_HABITS); self.dailies=copy.deepcopy(DEMO_DAILIES); self.tracker=update_tracker({},self.tasks,[]); self.busy=False; self.stale=False; self.sync_state=None; self.bridge=ResultBridge(self); self.bridge.finished.connect(self.poll,Qt.ConnectionType.QueuedConnection); self.pages={}; self.pending_button=None; self.active_button=None; self.counts={}; self.expanded=set(); self.first_checklist_initialized=False; self.tab='todos' if demo else self.settings.get('tab','todos'); self.tab=self.tab if self.tab in TABS else 'todos'; self.pin=bool(self.settings.get('pin',True)); self.surface=max(85,min(100,int(self.settings.get('qt_surface_v6',99)))); self.compact=False; self.old_size=None; self.last_status='Demo · not connected'; self.query={t:'' for t in TABS}
         self.setWindowTitle('Habitica Progress Board'); self.setWindowFlags(Qt.WindowType.Window|Qt.WindowType.FramelessWindowHint|(Qt.WindowType.WindowStaysOnTopHint if self.pin else Qt.WindowType.Widget)); self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground); self.setMinimumSize(325,280); self.setMouseTracking(True)
         layout=QVBoxLayout(self); layout.setContentsMargins(14,11,14,11); layout.setSpacing(8)
-        head=row_layout(); brand=DragLabel(); brand.setFixedSize(22,22); brand.setCursor(Qt.CursorShape.SizeAllCursor); brand.setPixmap(QIcon(str(Path(__file__).with_name('HabiticaBoard.ico'))).pixmap(22,22)); head.addWidget(brand); title=DragLabel('HABITICA'); title.setStyleSheet('font-size: 13px; font-weight: 600;'); title.setCursor(Qt.CursorShape.SizeAllCursor); head.addWidget(title,1)
+        head=row_layout(); brand=DragLabel(); brand.setFixedSize(22,22); brand.setCursor(Qt.CursorShape.SizeAllCursor); brand.setPixmap(QIcon(str(asset_path('HabiticaBoard.ico'))).pixmap(22,22)); head.addWidget(brand); title=DragLabel('HABITICA'); title.setStyleSheet('font-size: 13px; font-weight: 600;'); title.setCursor(Qt.CursorShape.SizeAllCursor); head.addWidget(title,1)
         for t,fn,tip in [('···',self.settings_dialog,'Settings'),('Pin' if not self.pin else 'Pinned',self.toggle_pin,'Always on top'),('−',self.toggle_compact,'Collapse / expand'),('×',self.close,'Close')]:
             b=button(t,fn); b.setToolTip(tip); head.addWidget(b)
             if tip=='Always on top': self.pin_btn=b
@@ -530,6 +537,6 @@ if __name__=='__main__':
     available=set(QFontDatabase.families()); preferred=['Inter','Segoe UI Variable Text','Segoe UI Variable','Segoe UI','Microsoft YaHei UI','Noto Sans CJK SC','Arial','Sans Serif']
     font=QFont(); font.setFamilies([f for f in preferred if f in available] or ['Sans Serif']); font.setPixelSize(13); font.setWeight(QFont.Weight.Normal); font.setStyleStrategy(QFont.StyleStrategy.PreferAntialias); app.setFont(font)
     app.setStyle('Fusion'); app.setStyleSheet(CSS)
-    icon=Path(__file__).with_name('HabiticaBoard.ico')
+    icon=asset_path('HabiticaBoard.ico')
     if icon.exists(): app.setWindowIcon(QIcon(str(icon)))
     b=Board('--demo' in sys.argv); b.show(); sys.exit(app.exec())

@@ -1,10 +1,10 @@
 $ErrorActionPreference = 'Stop'
-Set-Location $PSScriptRoot
+Set-Location (Split-Path -Parent $PSScriptRoot)
 function Run-Native { param([string]$Command, [string[]]$Arguments) & $Command @Arguments; if ($LASTEXITCODE -ne 0) { throw "$Command exited with code $LASTEXITCODE" } }
 $python = if (Test-Path '.venv-build\Scripts\python.exe') { (Resolve-Path '.venv-build\Scripts\python.exe').Path } else { Run-Native 'python' @('-m','venv','.venv-build') | Out-Host; (Resolve-Path '.venv-build\Scripts\python.exe').Path }
 Run-Native $python @('-m','pip','install','-r','requirements.txt','PyInstaller>=6.11,<7')
 Run-Native $python @('-m','unittest','discover','-v')
-Run-Native $python @('-m','PyInstaller','--noconfirm','--clean','--onedir','--windowed','--name','HabiticaProgressBoard','--icon','HabiticaBoard.ico','--add-data','HabiticaBoard.ico;.','--add-data','HabiticaBoard.png;.','--copy-metadata','PySide6-Essentials','--copy-metadata','shiboken6','HabiticaProgressBoard.pyw')
+Run-Native $python @('-m','PyInstaller','--noconfirm','--clean','--onedir','--windowed','--name','HabiticaProgressBoard','--icon','assets\HabiticaBoard.ico','--add-data','assets\HabiticaBoard.ico;assets','--add-data','assets\HabiticaBoard.png;assets','--copy-metadata','PySide6-Essentials','--copy-metadata','shiboken6','src\HabiticaProgressBoard.pyw')
 $exe = (Resolve-Path 'dist\HabiticaProgressBoard\HabiticaProgressBoard.exe').Path
 $oldLocal = $env:LOCALAPPDATA
 $tempLocal = Join-Path ([System.IO.Path]::GetTempPath()) ('HabiticaSmoke-' + [guid]::NewGuid())
@@ -24,5 +24,5 @@ New-Item -ItemType Directory -Force -Path release | Out-Null
 Compress-Archive -Path 'dist\HabiticaProgressBoard' -DestinationPath 'release\HabiticaProgressBoard-v0.7.5-Windows-x64-portable.zip' -Force
 $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe'
 if (-not (Test-Path $iscc)) { throw 'Inno Setup 6 is required. Install it from https://jrsoftware.org/isdl.php and run again.' }
-Run-Native $iscc @('installer.iss')
+Run-Native $iscc @('scripts\installer.iss')
 Get-ChildItem release -File | Where-Object { $_.Extension -in '.exe','.zip' } | Get-FileHash -Algorithm SHA256 | ForEach-Object { "$($_.Hash.ToLower())  $([System.IO.Path]::GetFileName($_.Path))" } | Set-Content release\SHA256SUMS.txt -Encoding ascii
